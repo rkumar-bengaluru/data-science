@@ -9,16 +9,28 @@ import whisper
 #from langchain.llms import CTransformers
 import langchain
 from sklearn.model_selection import train_test_split
+from langchain.chains.summarize import load_summarize_chain
+from langchain.agents import create_pandas_dataframe_agent
 
 def get_transformer():
     llm = langchain.llms.CTransformers(model='model/llama-2-7b-chat.ggmlv3.q8_0.bin',
                         model_type='llama',
                         config={'max_new_tokens':256, 
-                                'temperature':0.01})
+                                'temperature':0.2})
     return llm
 
 def get_prompt_template(template):
     prompt = langchain.prompts.PromptTemplate(input_variables=['instruction', 'input'],
+                            template=template)
+    return prompt
+
+def get_prompt_template_for_advice(template):
+    prompt = langchain.prompts.PromptTemplate(input_variables=['pages'],
+                            template=template)
+    return prompt
+
+def get_prompt_template_for_email(template):
+    prompt = langchain.prompts.PromptTemplate(input_variables=["style","email_topic","sender","recipient"],
                             template=template)
     return prompt
 
@@ -53,10 +65,28 @@ def get_pdf_text(pdf_doc):
         text += page.extract_text()
     return text
 
+
+
 #Read dataset for model creation
 def read_data_set(data):
     df = pd.read_csv(data,delimiter=',', header=None)  
     return df
+
+def extract_payment_advice_data(pages_data):
+    template = """Extract all the following values : Document Date, Document Type, Document No., Amount(MYR) from this data: {pages}
+
+        Expected output: remove any dollar symbols {{'Document Date': '18 May 2022','Document Type': 'Invoice','Document No.': '1101476361','Amount(MYR)': '242.00'}}
+        """
+    prompt_template = get_prompt_template_for_advice(template)
+    llm = get_transformer()
+
+    output = llm(prompt_template.format(pages=pages_data))
+    full_response = ''
+    for item in output:
+        full_response += item
+
+    print(full_response)
+    return full_response
 
 # function to extract data from text using LLM
 def extract_data(pages_data):
@@ -74,7 +104,7 @@ def extract_data(pages_data):
     # 'Phone number': '9999999999', 'Address': 'Mumbai India'}}
     # """
 
-    prompt_template = get_prompt_template(template)
+    prompt_template = get_prompt_template_for_advice(template)
 
     #llm = OpenAI(temperature=0.7)
     #full_response = llm(promptTemplate.format(pages=pages_data))
@@ -92,6 +122,35 @@ def extract_data(pages_data):
 
     print(full_response)
     return full_response
+
+def create_zuellig_payment_advice(user_pdf_list):
+    df = pd.DataFrame({'Document Date': pd.Series(dtype='str'),
+                       'Document Type': pd.Series(dtype='str'),
+                       'Document No.': pd.Series(dtype='str'),
+                       'Amount(MYR)': pd.Series(dtype='str')
+                       })
+    for file_name in user_pdf_list:
+        print(file_name)
+        raw_data = get_pdf_text(file_name)
+        llm_extracted_text = extract_payment_advice_data(raw_data)
+        pattern = r'{(.+)}'
+        match = re.search(pattern, llm_extracted_text, re.DOTALL)
+
+        if match:
+            extracted_text = match.group(1)
+            print(extract_data)
+            try:
+                data_dict = eval('{' + extracted_text + '}')
+                print(data_dict)
+            except:
+                print("exception")
+        else:
+            print("No match found")
+        
+        df = pd.concat([df, pd.DataFrame([data_dict])], ignore_index=True)
+        print("DONE............")
+    df.head()
+    return df
 
 # de
 def create_docs(user_pdf_list):
@@ -127,3 +186,30 @@ def create_docs(user_pdf_list):
         print("DONE............")
     df.head()
     return df
+
+    # Helps us get the summary of a document
+def get_summary(current_doc):
+    #llm = OpenAI(temperature=0)
+    #llm = HuggingFaceHub(repo_id="bigscience/bloom", model_kwargs={"temperature":1e-10})
+    print("working with Llama 2 LLM to get the reponse")
+    llm = get_transformer()
+    chain = load_summarize_chain(llm, chain_type="map_reduce")
+    summary = chain.run([current_doc])
+    print(summary)
+
+    return summary
+
+def query_agent(data, query):
+
+    # Parse the CSV file and create a Pandas DataFrame from its contents.
+    df = pd.read_csv(data)
+
+    #llm = OpenAI()
+    llm = get_transformer()
+    
+    # Create a Pandas DataFrame agent.
+    agent = create_pandas_dataframe_agent(llm, df, verbose=True)
+
+    #Python REPL: A Python shell used to evaluating and executing Python commands. 
+    #It takes python code as input and outputs the result. The input python code can be generated from another tool in the LangChain
+    return agent.run(query)

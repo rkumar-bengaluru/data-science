@@ -4,8 +4,9 @@ from utils.utils import *
 
 def invoice():
     load_dotenv()
-    st.set_page_config(page_title="Invoice Extraction Bot")
+  
     st.title("Invoice Extraction Bot...")
+    st.write('https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML')
     st.subheader("I can help you in extracting invoice data")
 
     # upload the invoice (pdf files)
@@ -28,6 +29,8 @@ def invoice():
             key="download-tools-csv"
         )
         st.success("Hope I was able to save your time")
+    
+    
 
 if __name__ == "__main__":
     invoice()

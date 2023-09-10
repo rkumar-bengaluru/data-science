@@ -7,6 +7,9 @@ def main():
     st.title("Customer Care Call Summarization")
     st.image(Image.open("images/whisper.png"), caption='Customer Care Call Summarization')
 
+    st.write('We’ve trained and are open-sourcing a neural net called Whisper that approaches human level robustness and accuracy on English speech recognition.')
+    st.write('https://openai.com/research/whisper')
+
     # Upload multiple files
     uploaded_files = st.file_uploader("Upload recorded .mp3 files", type=["mp3"], accept_multiple_files=True)
 

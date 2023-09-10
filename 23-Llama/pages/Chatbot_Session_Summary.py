@@ -15,11 +15,12 @@ if 'conversation' not in st.session_state:
 if 'messages' not in st.session_state:
     st.session_state['messages'] = []
 
-st.set_page_config(page_title="ZulligPharma Large Language Model", page_icon=":robot_face:")
+
 st.markdown("<h1 style='text-align: center;'> How can I assist you?</h1>", unsafe_allow_html=True)
 st.sidebar.title("😎")
 
 sunglasses = Image.open("images/chatsummary.png")
+st.write('https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML')
 st.image(sunglasses, caption='ZuelligPharma Chatbot')
 
 summarize_button = st.sidebar.button("Summarize the conversation", key="chatbot_summarize")

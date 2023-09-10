@@ -8,7 +8,7 @@ import constants
 
 def main():
     load_dotenv()
-    st.set_page_config(page_title="Dump PDF to Pinecone - Vector Store")
+
     st.title("Please upload your files...📁 ")
 
     st.session_state['Pinecone_API_Key']= st.text_input("What's your Pinecone API key?",type="password")

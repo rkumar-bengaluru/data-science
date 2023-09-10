@@ -1,7 +1,7 @@
 import streamlit as st
 import langchain
 
-from utils.utils import get_transformer, get_prompt_template
+from utils.utils import get_transformer, get_prompt_template_for_email
 
 def getLLMResponse(form_input, email_sender, email_reciepient, email_style):
     llm = get_transformer()
@@ -10,16 +10,14 @@ def getLLMResponse(form_input, email_sender, email_reciepient, email_style):
     \n\n Email Text:
     """
 
-    prompt = get_prompt_template(template)
+    prompt = get_prompt_template_for_email(template)
     response = llm(prompt.format(email_topic=form_input, sender=email_sender, recipient=email_reciepient, style=email_style))
     print(response)
     return response
 
-st.set_page_config(page_title="Generate Emails",
-                   page_icon=",",
-                   layout="centered",
-                   initial_sidebar_state="collapsed")
+
 st.header("Generate EMails")
+st.write('https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML')
 st.write('Example Topic - Tell me about president of singapore')
 form_input = st.text_area("Enter Email Topic", height=275)
 

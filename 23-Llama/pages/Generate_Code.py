@@ -24,15 +24,12 @@ def getLLMResponse(instruction_txt, input_txt):
     print(response)
     return response
 
-st.set_page_config(page_title="Generate Code",
-                   page_icon=",",
-                   layout="centered",
-                   initial_sidebar_state="collapsed")
 st.header("Generate Code - Alpaca Dataset")
 st.write('https://raw.githubusercontent.com/sahil280114/codealpaca/master/data/code_alpaca_20k.json')
 df = pd.read_json('data/alpaca_master_data_code_alpaca_20k.json')
 df = df.head()
 st.table(df)
+st.write('https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML')
 instruction_text = st.text_area("Enter Instruction:", height=100,key='instruction')
 input_txt = st.text_area("Enter Input:", height=100,key='input_txt')
 

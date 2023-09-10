@@ -12,6 +12,8 @@ from PIL import Image
 
 st.title('🤖 AI Assistance For Website') 
 st.image(Image.open("images/crawler.png"), caption='AI Assistance For Website')
+st.write('https://huggingface.co/TheBloke/Llama-2-7B-Chat-GGML')
+st.write('https://app.pinecone.io/')
 st.session_state['HuggingFace_API_Key']= st.text_input("What's your HuggingFace API key?",type="password")
 st.session_state['Pinecone_API_Key']= st.text_input("What's your Pinecone API key?",type="password")
 

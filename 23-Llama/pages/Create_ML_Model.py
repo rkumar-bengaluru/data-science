@@ -23,6 +23,7 @@ if 'svm_classifier' not in st.session_state:
 
  
 st.title("Let's build our Model...")
+st.write('https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html')
  
 # Create tabs
 tab_titles = ['Data Preprocessing', 'Model Training', 'Model Evaluation',"Save Model"]
