@@ -40,7 +40,7 @@ def main():
 
         #Function to pull index data from Pinecone
         print("pulling index...")
-        index= pull_from_pinecone(st.session_state['Pinecone_API_Key'],constants.PINECONE_ENVIRONMENT,constants.PINECONE_INDEX,embeddings)
+        index= pull_from_pinecone(st.session_state['Pinecone_API_Key'],constants.PINECONE_ENVIRONMENT,constants.PINECONE_TICKET_INDEX,embeddings)
         print("pulling index done...")
         #This function will help us in fetching the top relevent documents from our vector store - Pinecone Index
         print("getting similarity search...")

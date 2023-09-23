@@ -11,7 +11,7 @@ def main():
 
     st.title("Please upload your files...📁 ")
 
-    st.session_state['Pinecone_API_Key']= st.text_input("What's your Pinecone API key?",type="password")
+    st.session_state['Pinecone_tickets_key']= st.text_input("What's your Pinecone Tickets API key?",type="password")
 
     # Upload the pdf file
     pdf = st.file_uploader("Only PDF files allowed", type=["pdf"])
@@ -32,9 +32,9 @@ def main():
             st.write("👉Creating embeddings instance done")
 
             # Build the vector store (Push the PDF data embeddings)
-            push_to_pinecone(st.session_state['Pinecone_API_Key'],
+            push_to_pinecone(st.session_state['Pinecone_tickets_key'],
                          constants.PINECONE_ENVIRONMENT,
-                         constants.PINECONE_INDEX,embeddings,docs_chunks)
+                         constants.PINECONE_TICKET_INDEX,embeddings,docs_chunks)
 
         st.success("Successfully pushed the embeddings to Pinecone")
 
